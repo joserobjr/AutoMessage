@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import static com.TeamNovus.AutoMessage.Util.ReflectionUtil.*;
+
 public class MessageList {
 	private boolean enabled = true;
 	private int interval = 45;
@@ -160,7 +162,7 @@ public class MessageList {
 				}
 
 				if (m.contains("{ONLINE}"))
-					m = m.replace("{ONLINE}", Bukkit.getServer().getOnlinePlayers().length + "");
+					m = m.replace("{ONLINE}", Bukkit.getServer().getOnlinePlayers().size() + "");
 				if (m.contains("{MAX_ONLINE}"))
 					m = m.replace("{MAX_ONLINE}", Bukkit.getServer().getMaxPlayers() + "");
 				if (m.contains("{UNIQUE_PLAYERS}"))
@@ -194,16 +196,16 @@ public class MessageList {
 
 					try {
 						// Parse the message
-						Object parsedMessage = Class.forName("net.minecraft.server." + v + ".ChatSerializer").getMethod("a", String.class).invoke(null, ChatColor.translateAlternateColorCodes("&".charAt(0), m));
-						Object packetPlayOutChat = Class.forName("net.minecraft.server." + v + ".PacketPlayOutChat").getConstructor(Class.forName("net.minecraft.server." + v + ".IChatBaseComponent")).newInstance(parsedMessage);
+						Object parsedMessage = invoke(getFromJson(), null, ChatColor.translateAlternateColorCodes("&".charAt(0), m));
+						Object packetPlayOutChat = construct(getPacketPlayOutChatConstructor(), parsedMessage);
 
 						// Drill down to the playerConnection which calls the sendPacket method
-						Object craftPlayer = Class.forName("org.bukkit.craftbukkit." + v + ".entity.CraftPlayer").cast(to);
-						Object craftHandle = Class.forName("org.bukkit.craftbukkit." + v + ".entity.CraftPlayer").getMethod("getHandle").invoke(craftPlayer);
-						Object playerConnection = Class.forName("net.minecraft.server." + v + ".EntityPlayer").getField("playerConnection").get(craftHandle);
+						Object craftPlayer = cast(to, getCraftPlayerClass());
+						Object craftHandle = invoke(getGetHandle(), craftPlayer);
+						Object playerConnection = get(getPlayerConnection(), craftHandle);
 
 						// Send the message packet
-						Class.forName("net.minecraft.server." + v + ".PlayerConnection").getMethod("sendPacket", Class.forName("net.minecraft.server." + v + ".Packet")).invoke(playerConnection, packetPlayOutChat);
+						invoke(getSendPacket(), playerConnection, packetPlayOutChat);
 					} catch (Exception ignore) {
 					}
 				} else {

@@ -46,29 +46,21 @@
 	</build>
 
 	<repositories>
-		<!-- Bukkit -->
+		<!-- JitPack -->
 		<repository>
-			<id>bukkit</id>
-			<name>Bukkit</name>
-			<url>http://repo.bukkit.org/content/groups/public/</url>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io/</url>
 		</repository>
 	</repositories>
 
 	<dependencies>
 		<!-- Bukkit -->
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>1.7.9-R0.2-SNAPSHOT</version>
+			<groupId>com.github.CyberdyneCC</groupId>
+			<artifactId>Thermos-Bukkit</artifactId>
+			<version>ad9519650b</version>
 		</dependency>
 		
-		<!-- CraftBukkit -->
-		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.7.9-R0.2-SNAPSHOT</version>
-		</dependency>
-
 		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
